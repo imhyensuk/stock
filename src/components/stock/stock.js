@@ -14,6 +14,9 @@ import 'chartjs-adapter-date-fns';
 
 ChartJS.register(...registerables);
 
+// --- API 설정 ---
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 // --- 상수 정의 ---
 const periodOptions = [
   { label: '1M', value: '1mo' }, { label: '3M', value: '3mo' },
@@ -200,7 +203,7 @@ const TickerSearchModal = ({ isOpen, onClose, onSelectTicker }) => {
     setError(null);
     setResults([]);
     try {
-      const response = await axios.get(`http://localhost:8000/api/search-ticker?query=${query}`);
+      const response = await axios.get(`${API_URL}/api/search-ticker?query=${query}`);
       setResults(response.data);
       if (response.data.length === 0) {
         setError("검색 결과가 없습니다. (주식(EQUITY)만 필터링됩니다)");
@@ -288,7 +291,7 @@ const EventsTab = ({ data1 }) => {
     setNews([]); 
     const fetchNews = async () => {
       try {
-        const response = await axios.post('http://localhost:8000/api/news-for-date', {
+        const response = await axios.post(`${API_URL}/api/news-for-date`, {
           date: selectedDate,
           ticker: info.symbol,
           companyName: companyName
@@ -427,13 +430,13 @@ const FederalInfoTab = ({ onChartClick, data1 }) => {
       try {
         // 1. FRED 데이터 요청
         const fredRequests = Object.keys(FEDERAL_SERIES).map(seriesId => 
-          axios.get(`http://localhost:8000/api/fred/${seriesId}?startDate=${startDateString}`)
+          axios.get(`${API_URL}/api/fred/${seriesId}?startDate=${startDateString}`)
             .then(res => ({ seriesId, data: res.data }))
             .catch(err => ({ seriesId, error: err.message }))
         );
         
         // 2. 주가 데이터 20년 기간으로 요청
-        const stockRequest = axios.get(`http://localhost:8000/api/stock/${ticker}?startDate=${startDateString}`)
+        const stockRequest = axios.get(`${API_URL}/api/stock/${ticker}?startDate=${startDateString}`)
                                   .then(res => ({ type: 'stock', data: res.data }))
                                   .catch(err => ({ type: 'stock', error: err.message }));
 
@@ -623,7 +626,7 @@ const Stock = () => {
     });
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/stock/${ticker}?period=${selectedPeriod}`);
+      const response = await axios.get(`${API_URL}/api/stock/${ticker}?period=${selectedPeriod}`);
       setStockData(prev => {
         const newData = [...prev];
         newData[index] = response.data;
@@ -668,7 +671,7 @@ const Stock = () => {
       const startDate = data1.hist[0].date;
       
       try {
-        const res = await axios.get(`http://localhost:8000/api/fred/DGS10?startDate=${startDate}`);
+        const res = await axios.get(`${API_URL}/api/fred/DGS10?startDate=${startDate}`);
         setFredData(res.data);
       } catch (err) {
         console.error("Failed to fetch FRED data", err);
