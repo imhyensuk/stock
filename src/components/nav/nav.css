@@ -1,0 +1,84 @@
+/* /Users/imhyeonseok/Documents/stock/web/src/components/nav/nav.css */
+.nav-sidebar {
+  position: fixed; 
+  left: 0;
+  top: 0;
+  height: 100vh; 
+  width: 80px;   
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  /* (수정) space-between -> center로 변경 */
+  justify-content: center; 
+  
+  padding: 25px 0;
+  border-right: 1px solid #222; 
+  z-index: 100; 
+}
+
+/* (수정) .nav-bottom a 선택자 제거 */
+.nav-links a {
+  color: #777; 
+  font-size: 24px; 
+  margin: 18px 0;
+  transition: color 0.3s ease;
+  position: relative; 
+  display: flex;
+  justify-content: center;
+  width: 100%; 
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; 
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a.active {
+  color: #fff; 
+}
+
+/* --- 툴팁 스타일 --- */
+.nav-tooltip-text {
+  visibility: hidden; 
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  position: absolute; 
+  left: 100%; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  margin-left: 15px; 
+  background-color: #f0f0f0; 
+  color: #050505; 
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap; 
+  z-index: 101; 
+  pointer-events: none; 
+}
+
+.nav-tooltip-text::before {
+  content: "";
+  position: absolute;
+  right: 100%; 
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #f0f0f0 transparent transparent; 
+}
+
+/* (수정) .nav-bottom a:hover 선택자 제거 */
+.nav-links a:hover .nav-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

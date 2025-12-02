@@ -1,0 +1,55 @@
+/* /Users/imhyeonseok/Documents/stock/web/src/components/analysis/analysis.css */
+
+.analysis-container {
+  margin-left: 80px; /* Nav 너비만큼 여백 */
+  height: 100vh;
+  width: calc(100% - 80px);
+  background-color: #050505; /* 메인 테마와 동일한 다크 배경 */
+  color: #f0f0f0;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center;     /* 세로 중앙 정렬 */
+  overflow: hidden;
+}
+
+.analysis-message-box {
+  text-align: center;
+  animation: fadeIn 1s ease-out;
+}
+
+.analysis-message-box h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #a0c4e0; /* 포인트 컬러 (Soft Blue) */
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 점(...) 애니메이션 */
+.loading-dots span {
+  font-size: 32px;
+  color: #555;
+  animation: blink 1.4s infinite both;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 깜빡임 애니메이션 */
+@keyframes blink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
