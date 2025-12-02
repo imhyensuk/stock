@@ -22,7 +22,8 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-const NODE_PORT = process.env.NODE_PORT || 8000;
+// Fly.io 환경 변수 'PORT'를 우선으로 사용, 없으면 NODE_PORT, 기본값 8000
+const NODE_PORT = process.env.PORT || process.env.NODE_PORT || 8000;
 
 // --- MongoDB 연결 및 스키마 정의 ---
 mongoose.connect(process.env.MONGO_URI)
@@ -770,11 +771,15 @@ app.get('/api/search-ticker', async (req, res) => {
 
 // --- [추가] React 정적 파일 서빙 및 Catch-all 라우트 (맨 마지막에 위치) ---
 // 프로덕션 환경(Fly.io 등)에서 React 빌드 파일을 제공하기 위함
-app.use(express.static(path.join(__dirname, '../build')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
-});
+const buildPath = path.join(__dirname, '../build');
+try {
+  app.use(express.static(buildPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+} catch (err) {
+  console.warn('⚠️  Build folder not found. Running in API-only mode.');
+}
 
 
 // --- [서버 시작] ---
