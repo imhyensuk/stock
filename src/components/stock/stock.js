@@ -231,7 +231,7 @@ const TickerSearchModal = ({ isOpen, onClose, onSelectTicker }) => {
     <div className="stock-modal-overlay" onClick={onClose}>
       <div className="stock-modal-content ticker-search-modal" onClick={(e) => e.stopPropagation()}>
         <div className="stock-modal-header">
-          <h3><BiSearchAlt /> 기업 티커 검색 (Yahoo Finance)</h3>
+          <h3><BiSearchAlt />Finding Company Ticker</h3>
           <button className="stock-modal-close-btn" onClick={onClose}>&times;</button>
         </div>
         <div className="ticker-search-body">
@@ -242,10 +242,10 @@ const TickerSearchModal = ({ isOpen, onClose, onSelectTicker }) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="기업명 입력 (예: Apple, 삼성전자)"
+              placeholder="Enter Company Name"
             />
             <button onClick={handleSearch} disabled={isLoading}>
-              {isLoading ? <LoadingSpinner /> : '검색'}
+              {isLoading ? <LoadingSpinner /> : 'Search'}
             </button>
           </div>
           <div className="ticker-search-results-container">
@@ -566,7 +566,7 @@ const FederalInfoTab = ({ onChartClick, data1 }) => {
           />
         ))}
         {Object.keys(charts).length === 0 && !isLoading && (
-           <ErrorDisplay message="데이터를 표시할 차트가 없습니다." />
+           <ErrorDisplay message="There is no chart to display the data." />
         )}
       </div>
     </section>
