@@ -15,7 +15,7 @@ import 'chartjs-adapter-date-fns';
 ChartJS.register(...registerables);
 
 // --- API 설정 ---
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 // --- 상수 정의 ---
 const periodOptions = [
