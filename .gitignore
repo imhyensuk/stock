@@ -14,15 +14,8 @@
 # misc
 .DS_Store
 
-# Environment variables (sensitive data - NEVER commit)
-.env
-.env.local
-.env.development
-.env.development.local
-.env.test
-.env.test.local
-.env.production
-.env.production.local
+# Environment variables
+# Only ignore backend env files; allow top-level .env and .env.local to be tracked
 backend/.env
 backend/.env.local
 backend/.env.*.local
