@@ -16,7 +16,7 @@ FROM node:20-bookworm-slim
 
 # Python 설치 (stock.py용) - 최소 패키지만 설치
 RUN apt-get update && apt-get install -y \
-    python3 \
+    python3-full \
     python3-pip \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -24,9 +24,9 @@ RUN apt-get update && apt-get install -y \
 # Python 패키지 캐시 최적화를 위해 한 번에 설치
 WORKDIR /app/backend
 
-# backend 의존성 먼저 복사 및 설치
+# backend 의존성 먼저 복사 및 설치 (--break-system-packages 추가)
 COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Node 의존성 설치
 COPY backend/package.json backend/package-lock.json* ./
