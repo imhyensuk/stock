@@ -18,4 +18,4 @@ npm start
 
 source venv/bin/activate
 
-pip install yfinance pandas
+pip install -r requirements.txt

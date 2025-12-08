@@ -1,0 +1,9 @@
+node_modules
+venv
+*.log
+.env
+.git
+.gitignore
+.dockerignore
+Dockerfile
+README.md

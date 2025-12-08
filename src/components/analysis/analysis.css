@@ -1,55 +1,237 @@
 /* /Users/imhyeonseok/Documents/stock/web/src/components/analysis/analysis.css */
 
-.analysis-container {
-  margin-left: 80px; /* Nav 너비만큼 여백 */
-  height: 100vh;
+/* Main Layout */
+.ana-container {
+  margin-left: 80px; 
+  min-height: 100vh;
   width: calc(100% - 80px);
-  background-color: #050505; /* 메인 테마와 동일한 다크 배경 */
+  background-color: #050505;
   color: #f0f0f0;
   display: flex;
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center;     /* 세로 중앙 정렬 */
-  overflow: hidden;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px;
+  box-sizing: border-box;
 }
 
-.analysis-message-box {
-  text-align: center;
-  animation: fadeIn 1s ease-out;
+.ana-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 30px;
+  width: 100%;
+  max-width: 1600px;
+  height: calc(100vh - 60px);
 }
 
-.analysis-message-box h1 {
-  font-size: 32px;
+/* === LEFT COLUMN === */
+.ana-col-left {
+  background-color: #0f0f0f;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid #222;
+  height: fit-content;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.ana-title { font-size: 24px; font-weight: 700; color: #a0c4e0; margin-bottom: 20px; text-align: center; letter-spacing: 0.5px; }
+.ana-input-box { margin-bottom: 25px; }
+.ana-search-form { display: flex; flex-direction: column; gap: 12px; }
+
+.ana-input { 
+  padding: 14px; 
+  border-radius: 8px; 
+  border: 1px solid #333; 
+  background-color: #1a1a1a; 
+  color: #fff; 
+  font-size: 16px; 
+  outline: none; 
+  transition: 0.3s; 
+}
+.ana-input:focus { border-color: #a0c4e0; background-color: #222; }
+
+.ana-btn { 
+  padding: 14px; 
+  border-radius: 8px; 
+  background-color: #a0c4e0; 
+  color: #000; 
+  font-weight: bold; 
+  border: none; 
+  cursor: pointer; 
+  transition: 0.3s; 
+  font-size: 16px;
+}
+.ana-btn:hover { background-color: #8bbdd9; transform: translateY(-1px); }
+.ana-btn:disabled { background-color: #444; cursor: not-allowed; transform: none; }
+
+/* Language Toggle */
+.ana-lang-toggle {
+  display: flex;
+  margin-top: 15px;
+  background-color: #1a1a1a;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+.ana-lang-toggle button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #777;
+  padding: 8px;
+  font-size: 13px;
   font-weight: 600;
-  color: #a0c4e0; /* 포인트 컬러 (Soft Blue) */
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+.ana-lang-toggle button.active {
+  background-color: #333;
+  color: #a0c4e0;
 }
 
-/* 점(...) 애니메이션 */
-.loading-dots span {
-  font-size: 32px;
-  color: #555;
-  animation: blink 1.4s infinite both;
+.ana-header-info { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #333; }
+.ana-header-info h2 { font-size: 32px; margin: 0; color: #fff; }
+.ana-price { font-size: 20px; color: #a0c4e0; font-weight: bold; margin: 5px 0; }
+.ana-date { color: #666; font-size: 12px; }
+
+.ana-card { 
+  background-color: #161616; 
+  padding: 20px; 
+  border-radius: 12px; 
+  margin-bottom: 15px; 
+  text-align: center; 
+  border: 1px solid #2a2a2a; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.ana-card h4 { margin: 0 0 10px 0; color: #999; font-weight: normal; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+.ana-score { font-size: 28px; font-weight: 800; }
+.text-blue { color: #2196f3; }
+.text-purple { color: #ce93d8; }
+.ana-desc { font-size: 12px; color: #555; margin-top: 8px; }
+
+.ana-loading-container { text-align: center; padding: 40px 0; }
+.ana-loader { border: 3px solid #222; border-top: 3px solid #a0c4e0; border-radius: 50%; width: 36px; height: 36px; animation: ana-spin 1s linear infinite; margin: 0 auto 15px auto; }
+@keyframes ana-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+/* === RIGHT COLUMN === */
+.ana-col-right {
+  display: flex;
+  flex-direction: column;
+  background-color: #0f0f0f;
+  border-radius: 16px;
+  border: 1px solid #222;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-.loading-dots span:nth-child(2) {
-  animation-delay: 0.2s;
+.ana-chat-wrapper { display: flex; flex-direction: column; height: 100%; }
+
+.ana-chat-header {
+  padding: 18px 25px;
+  background-color: #161616;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+}
+.ana-chat-header h3 { margin: 0; font-size: 16px; color: #eee; margin-right: 12px; font-weight: 600; }
+.ana-status-dot { width: 8px; height: 8px; background-color: #4caf50; border-radius: 50%; margin-right: 8px; box-shadow: 0 0 6px #4caf50; }
+.ana-status-text { font-size: 12px; color: #777; }
+
+.ana-chat-body {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.loading-dots span:nth-child(3) {
-  animation-delay: 0.4s;
+.ana-chat-empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
-/* 등장 애니메이션 */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.ana-message { display: flex; width: 100%; }
+.ana-message.user { justify-content: flex-end; }
+.ana-message.assistant { justify-content: flex-start; }
+
+.ana-bubble {
+  max-width: 85%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.7;
+  word-wrap: break-word;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* 깜빡임 애니메이션 */
-@keyframes blink {
-  0% { opacity: 0.2; }
-  20% { opacity: 1; }
-  100% { opacity: 0.2; }
+.ana-message.user .ana-bubble {
+  background-color: #a0c4e0;
+  color: #050505;
+  border-bottom-right-radius: 2px;
+  font-weight: 500;
+}
+
+.ana-message.assistant .ana-bubble {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  border-bottom-left-radius: 2px;
+}
+
+.ana-system-msg { color: #4caf50; font-size: 13px; font-weight: bold; display: flex; align-items: center; }
+.ana-spinner-small { width: 12px; height: 12px; border: 2px solid #4caf50; border-top-color: transparent; border-radius: 50%; margin-right: 10px; animation: ana-spin 1s linear infinite; }
+
+.typing span { display: inline-block; margin: 0 2px; animation: blink 1.4s infinite both; font-size: 24px; line-height: 10px; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+.ana-chat-input-area {
+  padding: 20px;
+  background-color: #161616;
+  border-top: 1px solid #2a2a2a;
+  display: flex;
+  gap: 12px;
+}
+
+.ana-chat-input-area input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background-color: #0a0a0a;
+  color: #fff;
+  outline: none;
+  font-size: 15px;
+  transition: 0.3s;
+}
+.ana-chat-input-area input:focus { border-color: #555; background-color: #111; }
+
+.ana-chat-input-area button {
+  padding: 0 24px;
+  border-radius: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+.ana-chat-input-area button:hover:not(:disabled) { background-color: #a0c4e0; color: #000; }
+
+@keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
+
+@media (max-width: 1000px) {
+  .ana-layout { grid-template-columns: 1fr; height: auto; }
+  .ana-col-right { height: 600px; margin-top: 30px; }
+  .ana-col-left { position: static; height: auto; }
 }
