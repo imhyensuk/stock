@@ -533,6 +533,6 @@ try {
   app.get('*', (req, res) => res.sendFile(path.join(buildPath, 'index.html')));
 } catch (e) { console.warn('Running in API-only mode'); }
 
-app.listen(NODE_PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${NODE_PORT}`);
+app.listen(NODE_PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on http://0.0.0.0:${NODE_PORT}`);
 });

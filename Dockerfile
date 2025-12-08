@@ -38,9 +38,9 @@ COPY --from=builder /app/build ./build
 COPY backend ./backend
 
 # 포트 설정
-ENV PORT=8000
-ENV NODEPORT=8000
-EXPOSE 8000
+ENV PORT=8080
+ENV NODEPORT=8080
+EXPOSE 8080
 
 WORKDIR /app/backend
 CMD ["node", "server.js"]
