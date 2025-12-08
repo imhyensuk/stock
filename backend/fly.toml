@@ -42,6 +42,7 @@ primary_region = 'lax'
     soft_limit = 800
 
 [[vm]]
-  memory = '1gb'
+  # Increase VM resources so the runner can unpack large container images
+  memory = '4gb'
   cpu_kind = 'shared'
-  cpus = 1
+  cpus = 2
