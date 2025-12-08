@@ -11,41 +11,33 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 2. Production 런타임 (Node.js + Python)
+# 2. Production 런타임 (Node.js + Python, 최소화)
 FROM node:20-bookworm-slim
 
-# Python 설치 (stock.py용)
+# Python 설치 (stock.py용) - 최소 패키지만 설치
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
-    python3-venv \
-    python-is-python3 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Python venv
-ENV VIRTUAL_ENV=/opt/venv
-RUN python -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-WORKDIR /app
-
-# --- 백엔드 Node 의존성 설치 ---
-# backend 디렉터리의 package.json을 기준으로 설치
-COPY backend/package.json backend/package-lock.json* ./backend/
+# Python 패키지 캐시 최적화를 위해 한 번에 설치
 WORKDIR /app/backend
-RUN npm install --omit=dev
 
-# --- Python 백엔드 의존성 설치 ---
+# backend 의존성 먼저 복사 및 설치
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Node 의존성 설치
+COPY backend/package.json backend/package-lock.json* ./
+RUN npm install --omit=dev
 
 # --- 빌드된 프론트와 백엔드 소스 복사 ---
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY backend ./backend
 
-# 포트 설정 (server.js는 NODEPORT 사용)
+# 포트 설정
 ENV PORT=8000
 ENV NODEPORT=8000
 EXPOSE 8000

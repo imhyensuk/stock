@@ -4,5 +4,4 @@ scipy
 numpy
 lxml
 lightgbm
-torch
 scikit-learn

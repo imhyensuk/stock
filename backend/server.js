@@ -349,7 +349,7 @@ app.post('/api/chat', async (req, res) => {
     2. **중요:** 도구(Tool/Function)를 호출할 때는 JSON 데이터의 **Key(예: 'query')는 절대 번역하지 마세요.**
     
     [당신의 임무]
-    당신은 LightGBM, PyTorch VAE, GARCH 모델에서 추출된 데이터를 제공받습니다.
+    당신은 기술적 분석, 시장 뉴스, 경제 지표 데이터를 종합적으로 분석하여 투자 인사이트를 제공합니다.
     이 수치들의 '이유(Why)'를 찾기 위해 실시간 뉴스를 검색하고 연결하는 것이 당신의 역할입니다.
     
     [데이터 해석 규칙]
@@ -443,28 +443,10 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// 2. AI Model Prediction
+// 2. AI Model Prediction (DISABLED - Torch dependency removed for deployment)
 app.get('/api/predict/:ticker', async (req, res) => {
-  const { ticker } = req.params;
-  const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
-  const scriptPath = path.join(__dirname, 'model.py');
-  
-  const command = `${pythonCommand} "${scriptPath}" ${ticker}`;
-  console.log(`[Model] Running: ${command}`);
-
-  exec(command, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`[Python Error]: ${error.message}`);
-      return res.status(500).json({ error: "Model execution failed." });
-    }
-    try {
-      const result = JSON.parse(stdout);
-      if (result.error) return res.json(result); 
-      res.json(result);
-    } catch (parseError) {
-      console.error("[JSON Parse Error]:", stdout);
-      res.status(500).json({ error: "Failed to parse model output." });
-    }
+  res.status(503).json({ 
+    error: "Model prediction service is temporarily unavailable. Please use AI Chat for financial analysis." 
   });
 });
 
