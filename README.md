@@ -1,21 +1,88 @@
-백엔드 실행: /Users/imhyeonseok/Documents/stock/web/backend/ 터미널에서 다음을 실행합니다.
+📊 React 웹사이트 주요 기능 설명
+1. 메인 페이지 (/) - 랜딩 페이지
+기능: Swiper 캐러셀로 자동 재생되는 기능 소개
+특징:
+5가지 주요 기능 카드 표시 (데이터 소스, 분석, 비교, 통계 등)
+반응형 디자인으로 모바일/태블릿 지원
+부드러운 수평 스크롤 애니메이션
+각 카드에 아이콘과 설명 포함
+2. 주식 분석 대시보드 (/stock) - 핵심 기능
+웹사이트의 가장 복잡하고 강력한 페이지 (1,383줄)
 
-Bash
+📈 차트 및 기술 지표:
 
-node server.js
-(터미널에 Backend server running at http://localhost:8000가 표시되어야 합니다.)
+캔들스틱 차트 (OHLC 데이터)
+MACD (이동 평균 수렴 산산 지수)
+RSI (상대강도지수, 0-100 범위)
+Bollinger Bands (볼린저 밴드)
+모멘텀, 스토캐스틱 등 20+ 기술 지표
+각 차트는 date-fns로 날짜 형식 자동 변환
+🔍 검색 및 필터링:
 
-프론트엔드 실행: /Users/imhyeonseok/Documents/stock/web/ 터미널에서 다음을 실행합니다.
+자동완성 기능이 있는 Ticker 검색 모달
+기간 선택: 1M, 3M, 6M, 1Y, 5Y, 10Y, All
+실시간 데이터 업데이트
+⚖️ 비교 기능:
 
-Bash
+두 개 회사의 주식 동시 비교 (나란히 배치)
+같은 기간 내 성능 대조
+📰 뉴스 및 이벤트:
 
-npm start
-브라우저에서 /stock 페이지로 이동하면, 기본값인 'Dow Jones' 데이터가 로드되며, 왼쪽 사이드바에서 다른 주식을 클릭하면 해당 주식의 차트, 뉴스, 트렌드가 실시간으로 로드됩니다.
+선택한 날짜의 관련 뉴스 자동 로드
+뉴스 링크 클릭 시 외부 사이트 열기
+💾 데이터 내보내기:
 
+차트를 PNG 이미지로 다운로드
+기술 지표 데이터 CSV 내보내기
+3. AI 분석 페이지 (/analysis) - 머신러닝 예측
+신경망 기반 AI 주가 예측 도구
 
+🤖 기능:
 
-/usr/local/bin/python3 -m venv venv
+Ticker 입력하면 AI 모델이 주가 방향 예측 (상승/하락/횡보)
+예측 신뢰도 점수 표시 (0-100%)
+녹색: 강한 상승신호 (>55%)
+주황색: 중립 (45-55%)
+빨간색: 강한 하락신호 (<45%)
+예측 근거 설명 제공
+로딩 중 "신경망 처리 중..." 메시지
+💬 AI 채팅:
 
-source venv/bin/activate
+Groq LLM 기반 실시간 AI 채팅
+금융 질문에 대한 AI 답변
+검색 도구 통합으로 최신 시장 정보 제공
+4. 상담 페이지 (/contact)
+사용자 피드백 및 문의 폼
+메시지 제출 기능
+5. 네비게이션 바 (Nav)
+모든 페이지에 고정된 상단 네비게이션
+로고 및 메뉴 아이콘 포함
+React Router로 페이지 간 이동
+🔌 백엔드 API 연동
+엔드포인트	기능	사용처
+/api/stock/:ticker	주식 데이터 + 20+ 기술 지표 조회	주식 대시보드
+/api/predict/:ticker	AI 주가 예측 (머신러닝 모델)	AI 분석 페이지
+/api/chat	AI 금융 상담	분석 페이지 채팅
+/api/search-ticker	자동완성 Ticker 검색	주식 대시보드
+/api/news-for-date	특정 날짜 뉴스 조회	주식 대시보드
+/api/fred/:seriesId	미국 연방준비제도 경제 데이터	경제 지표
+🎨 기술 스택
+프론트엔드:
 
-pip install -r requirements.txt
+React 19 (UI 프레임워크)
+Chart.js + react-chartjs-2 (차트 시각화)
+Swiper (캐러셀)
+Axios (HTTP 통신)
+React Router (페이지 라우팅)
+React Icons (아이콘)
+Date-fns (날짜 처리)
+배포:
+
+Vercel (현재 정상 운영)
+✨ 사용자 경험
+1️⃣ 메인 페이지 → 기능 소개 받음
+2️⃣ 주식 대시보드 → 원하는 회사 검색, 차트로 분석
+3️⃣ 비교 기능 → 두 회사 성과 비교
+4️⃣ AI 분석 → 머신러닝 예측 받음
+5️⃣ AI 채팅 → 금융 상담
+6️⃣ 데이터 내보내기 → 차트 저장
