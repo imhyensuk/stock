@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './analysis.css';
 
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+
 const AnalysisChat = ({ ticker, analysisResult }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -68,7 +70,7 @@ const AnalysisChat = ({ ticker, analysisResult }) => {
       const payload = [...contextMessages, { role: 'user', content: text }];
 
       // language 파라미터는 더 이상 필요 없지만 호환성을 위해 'ko' 전달
-      const response = await axios.post('http://localhost:8000/api/chat', {
+      const response = await axios.post(`${API_URL}/api/chat`, {
         messages: payload,
         language: 'ko' 
       });

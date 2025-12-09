@@ -6,6 +6,8 @@ import Nav from '../nav/nav';
 import AnalysisChat from './AnalysisChat';
 import './analysis.css';
 
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+
 const Analysis = () => {
   const [ticker, setTicker] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const Analysis = () => {
     setResult(null);
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/predict/${ticker}`);
+      const response = await axios.get(`${API_URL}/api/predict/${ticker}`);
       if (response.data.error) {
         setError(response.data.error);
       } else {

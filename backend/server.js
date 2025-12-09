@@ -334,43 +334,46 @@ const tools = [
 // [SECTION 3] API Endpoints
 // ==========================================
 
-// 1. AI Chat Endpoint (Korean Only)
+// 1. AI Chat Endpoint with Language Support
 app.post('/api/chat', async (req, res) => {
-  const { messages } = req.body; 
+  const { messages, language } = req.body; 
 
   if (!messages || messages.length === 0) return res.status(400).json({ error: "No messages provided." });
 
+  // [FIX] 언어 지침을 명확히 하고, Tool 호출과 답변 생성을 엄격히 분리
+  const langInstruction = language === 'ko' 
+    ? "최종 답변은 반드시 **한국어(Korean)**로 작성하세요." 
+    : "All final responses must be in **English**.";
+
   const systemPrompt = {
     role: 'system',
-    content: `당신은 'Quantum Insight'라는 수석 AI 금융 애널리스트입니다.
+    content: `You are 'Quantum Insight', a Senior Quantitative Strategist & AI Analyst.
     
-    [필수 지침 - 언어]
-    1. **모든 답변은 반드시 한국어(Korean)로만 작성하세요.** 사용자가 영어로 질문해도 한국어로 답변하세요.
-    2. **중요:** 도구(Tool/Function)를 호출할 때는 JSON 데이터의 **Key(예: 'query')는 절대 번역하지 마세요.**
+    [CRITICAL INSTRUCTION - TOOL USE]
+    1. When you need information, you MUST call a tool (function).
+    2. **DO NOT** generate any conversational text or "thoughts" when calling a tool. Output **ONLY** the JSON for the tool call.
+    3. The tool parameter keys MUST remain in English (e.g., 'query'), even if the value is Korean.
     
-    [당신의 임무]
-    당신은 기술적 분석, 시장 뉴스, 경제 지표 데이터를 종합적으로 분석하여 투자 인사이트를 제공합니다.
-    이 수치들의 '이유(Why)'를 찾기 위해 실시간 뉴스를 검색하고 연결하는 것이 당신의 역할입니다.
+    [MANDATORY LANGUAGE INSTRUCTION]
+    ${langInstruction}
     
-    [데이터 해석 규칙]
-    1. **방향성 점수 (Direction Score):**
-       - 0.5 초과: 상승세(Bullish). 실적 호조, 신제품 출시, 목표가 상향 등의 호재를 찾으세요.
-       - 0.5 미만: 하락세(Bearish). 규제 이슈, 실적 부진, 거시 경제 악재를 찾으세요.
-    2. **예측 변동성 (Volatility):**
-       - 높음: 금리 결정, 실적 발표일 임박, 지정학적 긴장 등을 검색하세요.
-    3. **시장 이상 징후 (Regime Anomaly):**
-       - 15점 이상: 시장의 구조적 위기 신호입니다. 폭락 위험, 유동성 위기 등을 검색하세요.
+    [YOUR MISSION]
+    You are provided with hard data from proprietary AI models (LightGBM, PyTorch VAE, GARCH).
+    Your job is to explain the 'WHY' by connecting data to real-world events.
     
-    [도구 사용 전략]
-    - **Tavily:** 전체적인 시장 흐름 파악용.
-    - **Google News (Serp):** 최근 7일 이내의 구체적인 뉴스 헤드라인 검색.
-    - **DeepSearch:** 기업의 심층 데이터나 공시 확인.
+    [DATA INTERPRETATION RULES]
+    1. **Direction Score (>0.5 Bullish, <0.5 Bearish):**
+       - Bullish? Find earnings beats, product launches, sector upgrades.
+       - Bearish? Find regulatory issues, poor guidance, macro headwinds.
+    2. **Predicted Volatility (Risk):**
+       - High? Search for "Fed meetings", "Earnings dates", "Geopolitical tension".
+    3. **Regime Anomaly Score (Market Stability):**
+       - High (>15)? This signals structural break. Search for "Crash risks", "Black swan", "Liquidity crisis".
     
-    [답변 스타일]
-    - 전문적이고 논리정연하게 작성하세요.
-    - 구조: "모델 판단" -> "실제 뉴스 증거" -> "전략적 제언"
-    - **반드시** 도구로 찾은 뉴스 출처나 사건을 언급하세요.
-    - 면책 조항: "이 분석은 AI에 의한 정보 제공이며, 투자 조언이 아닙니다."
+    [RESPONSE STYLE]
+    - Structure: "Model Verdict" -> "Real-world Evidence" -> "Strategic Implication".
+    - **Always** cite the news source or event found via tools.
+    - Disclaimer: "This is AI analysis, not financial advice."
     `
   };
 
@@ -382,17 +385,18 @@ app.post('/api/chat', async (req, res) => {
       model: 'llama-3.1-8b-instant', 
       tools: tools,
       tool_choice: "auto",
-      temperature: 0.1, // 도구 호출 정확도를 위해 낮게 설정
+      temperature: 0.1, // [FIX] 온도를 낮춰서 도구 호출의 정확도 향상
     });
 
     const responseMsg = completion.choices[0].message;
 
+    // 도구 호출이 발생했는지 확인
     if (responseMsg.tool_calls && responseMsg.tool_calls.length > 0) {
       messagesToSend.push(responseMsg); 
 
       const toolPromises = responseMsg.tool_calls.map(async (toolCall) => {
         const fnName = toolCall.function.name;
-        // JSON 파싱 안전장치
+        // [FIX] JSON 파싱 안전장치
         let fnArgs = {};
         try {
             fnArgs = JSON.parse(toolCall.function.arguments);
@@ -400,9 +404,9 @@ app.post('/api/chat', async (req, res) => {
             return { tool_call_id: toolCall.id, role: 'tool', name: fnName, content: "Error: Invalid JSON parameters." };
         }
 
-        let result = "정보를 찾을 수 없습니다.";
+        let result = "Info not found.";
         
-        // 파라미터 키가 번역되었을 경우를 대비한 방어 로직
+        // [FIX] 파라미터 키가 번역되었을 경우를 대비한 유연한 처리
         const query = fnArgs.query || fnArgs['뉴스 쿼리'] || fnArgs['검색어'] || Object.values(fnArgs)[0] || "";
 
         if (!query) return { tool_call_id: toolCall.id, role: 'tool', name: fnName, content: "Error: Missing query parameter." };
@@ -423,13 +427,13 @@ app.post('/api/chat', async (req, res) => {
       const toolResults = await Promise.all(toolPromises);
       messagesToSend.push(...toolResults); 
 
-      // 2차 호출 (최종 답변 생성)
+      // 2차 호출 (도구 결과 바탕으로 최종 답변 생성)
       const finalCompletion = await groq.chat.completions.create({
         messages: messagesToSend,
         model: 'llama-3.1-8b-instant',
         tools: tools,
         tool_choice: "auto",
-        temperature: 0.3, 
+        temperature: 0.3, // 답변 생성 시에는 약간의 창의성 허용
       });
 
       return res.json(finalCompletion.choices[0].message);
@@ -439,14 +443,37 @@ app.post('/api/chat', async (req, res) => {
 
   } catch (error) {
     console.error("AI Chat Error:", error.response ? error.response.data : error.message);
-    res.json({ role: "assistant", content: "죄송합니다. 분석 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요." });
+    // [FIX] 에러 발생 시 사용자에게 친절한 메시지 반환
+    const errorMessage = language === 'ko' 
+      ? "죄송합니다. 분석 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+      : "Sorry, a temporary error occurred during analysis. Please try again later.";
+      
+    res.json({ role: "assistant", content: errorMessage });
   }
 });
 
-// 2. AI Model Prediction (DISABLED - Torch dependency removed for deployment)
+// 2. AI Model Prediction
 app.get('/api/predict/:ticker', async (req, res) => {
-  res.status(503).json({ 
-    error: "Model prediction service is temporarily unavailable. Please use AI Chat for financial analysis." 
+  const { ticker } = req.params;
+  const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
+  const scriptPath = path.join(__dirname, 'model.py');
+  
+  const command = `${pythonCommand} "${scriptPath}" ${ticker}`;
+  console.log(`[Model] Running: ${command}`);
+
+  exec(command, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`[Python Error]: ${error.message}`);
+      return res.status(500).json({ error: "Model execution failed." });
+    }
+    try {
+      const result = JSON.parse(stdout);
+      if (result.error) return res.json(result); 
+      res.json(result);
+    } catch (parseError) {
+      console.error("[JSON Parse Error]:", stdout);
+      res.status(500).json({ error: "Failed to parse model output." });
+    }
   });
 });
 
@@ -533,6 +560,6 @@ try {
   app.get('*', (req, res) => res.sendFile(path.join(buildPath, 'index.html')));
 } catch (e) { console.warn('Running in API-only mode'); }
 
-app.listen(NODE_PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${NODE_PORT}`);
+app.listen(NODE_PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${NODE_PORT}`);
 });

@@ -8,6 +8,8 @@ import './contact.css';
 import { BiUser, BiEnvelope, BiMap, BiCopy } from 'react-icons/bi';
 import { FaGithub } from 'react-icons/fa';
 
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+
 const Contact = () => {
   // 모달 팝업 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,7 +39,7 @@ const Contact = () => {
     
     try {
       // 서버로 POST 요청
-      const response = await axios.post('http://localhost:8000/api/contact', formData);
+      const response = await axios.post(`${API_URL}/api/contact`, formData);
       
       if (response.status === 201) {
         alert("Message sent successfully!");

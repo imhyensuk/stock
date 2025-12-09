@@ -7,6 +7,8 @@ import { BsArrowDown } from "react-icons/bs";
 import { IoSend } from "react-icons/io5"; // 전송 아이콘 임포트
 import { FaRobot } from 'react-icons/fa';
 
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+
 const ChatModal = ({ isOpen, onClose }) => {
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState([]);
@@ -41,7 +43,7 @@ const ChatModal = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages }),
