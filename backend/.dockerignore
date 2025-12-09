@@ -7,8 +7,3 @@ venv
 .dockerignore
 Dockerfile
 README.md
-regime.py
-model.py
-saved_models/
-*.pyc
-__pycache__
