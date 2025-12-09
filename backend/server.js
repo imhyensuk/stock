@@ -454,26 +454,10 @@ app.post('/api/chat', async (req, res) => {
 
 // 2. AI Model Prediction
 app.get('/api/predict/:ticker', async (req, res) => {
-  const { ticker } = req.params;
-  const pythonCommand = process.platform === 'win32' ? 'python' : 'python3';
-  const scriptPath = path.join(__dirname, 'model.py');
-  
-  const command = `${pythonCommand} "${scriptPath}" ${ticker}`;
-  console.log(`[Model] Running: ${command}`);
-
-  exec(command, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`[Python Error]: ${error.message}`);
-      return res.status(500).json({ error: "Model execution failed." });
-    }
-    try {
-      const result = JSON.parse(stdout);
-      if (result.error) return res.json(result); 
-      res.json(result);
-    } catch (parseError) {
-      console.error("[JSON Parse Error]:", stdout);
-      res.status(500).json({ error: "Failed to parse model output." });
-    }
+  // Model prediction service disabled - torch dependency removed to reduce Docker image size
+  res.status(503).json({ 
+    error: "Model prediction service is temporarily unavailable",
+    message: "이 기능은 현재 개선 중입니다."
   });
 });
 

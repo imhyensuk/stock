@@ -25,12 +25,18 @@ const Analysis = () => {
     try {
       const response = await axios.get(`${API_URL}/api/predict/${ticker}`);
       if (response.data.error) {
-        setError(response.data.error);
+        setError(response.data.error || response.data.message || "Unknown error occurred");
       } else {
         setResult(response.data);
       }
     } catch (err) {
-      setError("Server connection failed or execution error.");
+      if (err.response?.status === 503) {
+        setError("Model prediction service is currently unavailable. We're working on improvements.");
+      } else if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else {
+        setError("Server connection failed or execution error.");
+      }
       console.error(err);
     } finally {
       setLoading(false);
